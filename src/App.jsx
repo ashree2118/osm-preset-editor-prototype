@@ -1,9 +1,8 @@
 import { useState } from 'react'
 import FormEditor from './components/FormEditor'
-import IDPreview from './components/IDPreview'
-import JSONOutput from './components/JSONOutput'
 import { validate } from './utils/validate'
 import { generateJSON } from './utils/generate'
+import IDPreview from './components/IDPreview'
 
 const EMPTY_PRESET = {
   name: '', geometry: [], tags: {}, icon: '',
@@ -30,14 +29,13 @@ export const EXAMPLES = {
 export default function App() {
   const [preset, setPreset] = useState(EMPTY_PRESET)
 
-  const update = (key, val) => setPreset(p => ({ ...p, [key]: val }))
+  const update  = (key, val) => setPreset(p => ({ ...p, [key]: val }))
   const errors  = validate(preset)
   const json    = generateJSON(preset)
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', fontFamily: 'system-ui, sans-serif' }}>
-      {/* Header */}
-      <header style={{ background: '#2c3138', color: '#fff', padding: '10px 20px', display: 'flex', alignItems: 'center', gap: 16 }}>
+      <header style={{ background: '#2c3138', color: '#fff', padding: '10px 20px', display: 'flex', alignItems: 'center', gap: 16, flexShrink: 0 }}>
         <span style={{ display: 'inline-block', width: 10, height: 10, borderRadius: '50%', background: '#7ebc6f' }} />
         <strong style={{ fontSize: 15 }}>iD Preset Editor</strong>
         <span style={{ fontSize: 12, color: '#aaa' }}>GSoC 2026 Prototype · id-tagging-schema</span>
@@ -55,7 +53,6 @@ export default function App() {
         </div>
       </header>
 
-      {/* 3-panel layout */}
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', flex: 1, overflow: 'hidden' }}>
         <FormEditor preset={preset} update={update} errors={errors} />
         <IDPreview  preset={preset} />
