@@ -4,7 +4,7 @@ import { COMMON_FIELDS } from '../data/fields'
 
 const GEOMETRY_TYPES = ['point', 'line', 'area', 'relation', 'vertex']
 
-export default function FormEditor({ preset, update, errors }) {
+export default function FormEditor({ preset, update, errors, onFirstChange }) {
   const [tagKey, setTagKey]       = useState('')
   const [tagVal, setTagVal]       = useState('')
   const [fieldInput, setFieldInput] = useState('')
@@ -19,6 +19,7 @@ export default function FormEditor({ preset, update, errors }) {
 
   // Tags
   const addTag = () => {
+    onFirstChange()
     if (!tagKey.trim()) return
     update('tags', { ...preset.tags, [tagKey.trim()]: tagVal.trim() })
     setTagKey(''); setTagVal('')
@@ -31,10 +32,18 @@ export default function FormEditor({ preset, update, errors }) {
 
   // Fields / moreFields
   const addToList = (key, val, setVal) => {
+    onFirstChange()
     const v = val.trim()
     if (!v || preset[key].includes(v)) return
     update(key, [...preset[key], v])
     setVal('')
+  }
+  const toggleGeom = (g) => {
+    onFirstChange()
+    const next = preset.geometry.includes(g)
+      ? preset.geometry.filter(x => x !== g)
+      : [...preset.geometry, g]
+    update('geometry', next)
   }
   const removeFromList = (key, item) => update(key, preset[key].filter(x => x !== item))
 
@@ -65,21 +74,21 @@ export default function FormEditor({ preset, update, errors }) {
   const filteredIcons = MAKI_ICONS.filter(i => i.includes(iconSearch.toLowerCase()))
 
   return (
-    <div style={{ borderRight: '1px solid #e0e3e8', overflowY: 'auto', padding: 20, background: '#fff' }}>
+    <div style={{ borderRight: '1px solid #e0e3e8', overflowY: 'auto', padding: 20, background: '#fff', height: '100%' }}>
       <p style={sectionLabel}>Form Editor</p>
 
-      {/* NAME */}
+      {/* name */}
       <Field label="Name *" error={err('name')}>
         <input
           type="text"
           value={preset.name}
-          onChange={e => update('name', e.target.value)}
+          onChange={e => { onFirstChange(); update('name', e.target.value) }}
           placeholder="e.g. Mountain Arête"
           style={{ ...inputStyle, borderColor: err('name') ? '#e05252' : '#d0d5dd' }}
         />
       </Field>
 
-      {/* GEOMETRY */}
+      {/* geometry */}
       <Field label="Geometry *" error={err('geometry')}>
         <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap' }}>
           {GEOMETRY_TYPES.map(g => (
@@ -87,12 +96,7 @@ export default function FormEditor({ preset, update, errors }) {
               <input
                 type="checkbox"
                 checked={preset.geometry.includes(g)}
-                onChange={() => {
-                  const next = preset.geometry.includes(g)
-                    ? preset.geometry.filter(x => x !== g)
-                    : [...preset.geometry, g]
-                  update('geometry', next)
-                }}
+                onChange={() => toggleGeom(g)}
               />
               {g}
             </label>
@@ -100,7 +104,7 @@ export default function FormEditor({ preset, update, errors }) {
         </div>
       </Field>
 
-      {/* ICON */}
+      {/* icon */}
       <Field label="Icon">
         <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
           <div style={{ width: 36, height: 36, border: '1px solid #d0d5dd', borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f4f5f7', flexShrink: 0 }}>
@@ -148,7 +152,7 @@ export default function FormEditor({ preset, update, errors }) {
         )}
       </Field>
 
-      {/* TAGS */}
+      {/* tags */}
       <Field label="Tags *" error={err('tags')}>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 5, marginBottom: 8 }}>
           {Object.entries(preset.tags).map(([k, v]) => (
@@ -170,7 +174,7 @@ export default function FormEditor({ preset, update, errors }) {
         </div>
       </Field>
 
-      {/* FIELDS */}
+      {/* fields */}
       <Field label="Fields" error={err('fields')} warn>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 5, marginBottom: 8 }}>
           {preset.fields.map(f => (
@@ -200,8 +204,8 @@ export default function FormEditor({ preset, update, errors }) {
         </div>
       </Field>
 
-      {/* MORE FIELDS */}
-      <Field label="moreFields">
+      {/* more fileds */}
+      <Field label="More Fields">
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 5, marginBottom: 8 }}>
           {preset.moreFields.map(f => (
             <span key={f} style={{ ...fieldChip, opacity: 0.7 }}>
@@ -230,7 +234,7 @@ export default function FormEditor({ preset, update, errors }) {
         </div>
       </Field>
 
-      {/* TERMS */}
+      {/* terms */}
       <Field label="Search Terms" error={err('terms')}>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 5, marginBottom: 8 }}>
           {preset.terms.map(t => (
@@ -248,7 +252,7 @@ export default function FormEditor({ preset, update, errors }) {
         </div>
       </Field>
 
-      {/* AUTO SORT */}
+      {/* auto sort */}
       <button onClick={autoSort}
         style={{ ...btnStyle, width: '100%', marginTop: 8, background: '#e8f4e5', color: '#2d6a22', borderColor: '#b8ddb0', fontWeight: 500 }}>
         Auto-sort all arrays (A–Z)
