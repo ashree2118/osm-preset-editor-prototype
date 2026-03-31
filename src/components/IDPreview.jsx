@@ -1,4 +1,4 @@
-export default function IDPreview({ preset }) {
+export default function IDPreview({ preset, errors }) {
   const tagLine = Object.entries(preset.tags)
     .map(([k, v]) => `${k}=${v}`)
     .join(', ')
@@ -6,6 +6,7 @@ export default function IDPreview({ preset }) {
   return (
     <div style={{ borderRight: '1px solid #e0e3e8', background: '#f4f5f7', padding: 20, overflowY: 'auto' }}>
       <p style={sectionLabel}>iD Editor Preview</p>
+
 
       <div style={{ maxWidth: 300, margin: '0 auto', borderRadius: 10, overflow: 'hidden', border: '1px solid #ccc', boxShadow: '0 4px 20px rgba(0,0,0,0.10)' }}>
 
@@ -86,24 +87,12 @@ export default function IDPreview({ preset }) {
       </div>
 
       {/* Validation status card */}
-      <ValidationCard preset={preset} />
+      <ValidationCard errors={errors} />
     </div>
   )
 }
 
-function ValidationCard({ preset }) {
-  const errors = []
-
-  if (!preset.name?.trim())                          errors.push('Name is required')
-  else if (!/^[A-Z]/.test(preset.name))              errors.push('Name must be Title Case')
-  if (!preset.geometry?.length)                      errors.push('Geometry is required')
-  if (!Object.keys(preset.tags || {}).length)        errors.push('At least one tag required')
-  const sorted = [...(preset.fields || [])].sort()
-  if (JSON.stringify(preset.fields) !== JSON.stringify(sorted))
-                                                     errors.push('Fields not A–Z sorted')
-  const badTerms = (preset.terms || []).filter(t => /[A-Z]/.test(t))
-  if (badTerms.length)                               errors.push('Terms must be lowercase')
-
+function ValidationCard({ errors }) {
   const isValid = errors.length === 0
 
   return (
@@ -117,7 +106,7 @@ function ValidationCard({ preset }) {
         {isValid ? '✓ Validation passed — PR ready' : `✕ ${errors.length} issue${errors.length > 1 ? 's' : ''} found`}
       </p>
       {errors.map((e, i) => (
-        <p key={i} style={{ margin: '4px 0 0', fontSize: 11, color: '#c0392b' }}>· {e}</p>
+        <p key={i} style={{ margin: '4px 0 0', fontSize: 11, color: '#c0392b' }}>· {e.msg}</p>
       ))}
     </div>
   )

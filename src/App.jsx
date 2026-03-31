@@ -1,9 +1,9 @@
 import { useState } from 'react'
 import FormEditor from './components/FormEditor'
-import { validate } from './utils/validate'
-import { generateJSON } from './utils/generate'
 import IDPreview from './components/IDPreview'
 import JSONOutput from './components/JSONOutput'
+import { validate } from './utils/validate'
+import { generateJSON } from './utils/generate'
 
 const EMPTY_PRESET = {
   name: '', geometry: [], tags: {}, icon: '',
@@ -31,9 +31,12 @@ export default function App() {
   const [preset, setPreset] = useState(EMPTY_PRESET)
   const [touched, setTouched] = useState(false)
 
-  const update  = (key, val) => setPreset(p => ({ ...p, [key]: val }))
-  const errors  = touched ? validate(preset) : []
-  const json    = generateJSON(preset)
+  const update = (key, val) => {
+    setTouched(true)
+    setPreset(p => ({ ...p, [key]: val }))
+  }
+  const errors = touched ? validate(preset) : []
+  const json = generateJSON(preset)
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', fontFamily: 'system-ui, sans-serif' }}>
@@ -43,12 +46,14 @@ export default function App() {
         <span style={{ fontSize: 12, color: '#aaa' }}>GSoC 2026 Prototype · id-tagging-schema</span>
         <div style={{ marginLeft: 'auto', display: 'flex', gap: 8 }}>
           {Object.keys(EXAMPLES).map(k => (
-            <button key={k} onClick={() => { setPreset(EXAMPLES[k]); setTouched(true) }}
+            <button key={k}
+              onClick={() => { setPreset(EXAMPLES[k]); setTouched(true) }}
               style={{ fontSize: 12, padding: '4px 12px', cursor: 'pointer', background: '#3d4551', border: '1px solid #555', color: '#ddd', borderRadius: 4 }}>
               Load: {k}
             </button>
           ))}
-          <button onClick={() => setPreset(EMPTY_PRESET)}
+          <button
+            onClick={() => { setPreset(EMPTY_PRESET); setTouched(false) }}
             style={{ fontSize: 12, padding: '4px 12px', cursor: 'pointer', background: 'transparent', border: '1px solid #555', color: '#aaa', borderRadius: 4 }}>
             Clear
           </button>
@@ -57,7 +62,7 @@ export default function App() {
 
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', flex: 1, overflow: 'hidden', minHeight: 0 }}>
         <FormEditor preset={preset} update={update} errors={errors} onFirstChange={() => setTouched(true)} />
-        <IDPreview  preset={preset} />
+        <IDPreview  preset={preset} errors={errors} />
         <JSONOutput json={json} errors={errors} />
       </div>
     </div>
