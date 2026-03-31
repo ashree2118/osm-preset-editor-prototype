@@ -1,8 +1,8 @@
-# iD Preset Editor — GSoC 2026 Prototype
+# iD Preset Editor - GSoC 2026 Prototype
 
-A browser-based visual editor for creating and validating [id-tagging-schema](https://github.com/openstreetmap/id-tagging-schema) presets — the JSON definitions that power the [iD OpenStreetMap editor](https://github.com/openstreetmap/iD).
+A browser-based visual editor for creating and validating [id-tagging-schema](https://github.com/openstreetmap/id-tagging-schema) presets - the JSON definitions that power the [iD OpenStreetMap editor](https://github.com/openstreetmap/iD).
 
-**Live demo:** _your-github-pages-link-here_
+**Live demo:** (https://osm-preset-editor-prototype.vercel.app/)
 
 ![alt text](image.png)
 
@@ -16,7 +16,7 @@ Contributing presets to id-tagging-schema today means:
 3. Running local validation
 4. Opening a PR and iterating through review
 
-This tool removes steps 1–3. You fill out a form, see a live preview of how the preset will look inside the iD editor sidebar, and export PR-ready JSON — without touching a raw file.
+This tool removes steps 1-3. You fill out a form, see a live preview of how the preset will look inside the iD editor sidebar, and export PR-ready JSON - without touching a raw file.
 
 This is a **prototype** built as part of my GSoC 2026 application for the [Web-Based Collaborative Editing Core](https://wiki.openstreetmap.org/wiki/Google_Summer_of_Code/2026/Project_ideas) project.
 
@@ -40,10 +40,10 @@ This is a **prototype** built as part of my GSoC 2026 application for the [Web-B
 
 ## Tech stack
 
-- **React 18** with Vite — fast HMR, minimal setup
-- **useState only** — no external state library in this prototype; the full GSoC implementation will use Zustand for the document model
-- **Ajv-ready** — the `validate.js` module mirrors what the full Ajv + schema.json integration will do; upgrading it is a one-file change
-- **Zero runtime dependencies** — icons load from the official `@mapbox/maki` CDN; everything else is vanilla React
+- **React 18** with Vite - fast HMR, minimal setup
+- **useState only** - no external state library in this prototype; the full GSoC implementation will use Zustand for the document model
+- **Ajv-ready** - the `validate.js` module mirrors what the full Ajv + schema.json integration will do; upgrading it is a one-file change
+- **Zero runtime dependencies** - icons load from the official `@mapbox/maki` CDN; everything else is vanilla React
 
 ---
 
@@ -64,15 +64,15 @@ Open `http://localhost:5173`
 src/
   App.jsx              # Root layout, shared state
   components/
-    FormEditor.jsx     # Left panel — structured form with autocomplete
-    IDPreview.jsx      # Centre panel — mock iD sidebar (WYSIWYG)
-    JSONOutput.jsx     # Right panel — syntax-highlighted JSON + validation
+    FormEditor.jsx     # Left panel - structured form with autocomplete
+    IDPreview.jsx      # Centre panel - mock iD sidebar (WYSIWYG)
+    JSONOutput.jsx     # Right panel - syntax-highlighted JSON + validation
   data/
     icons.js           # Maki icon name list
     fields.js          # Common field names for autocomplete
   utils/
     validate.js        # Real-time validation rules (Title Case, A–Z, required fields)
-    generate.js        # JSON serializer — always outputs sorted, style-compliant JSON
+    generate.js        # JSON serializer - always outputs sorted, style-compliant JSON
 ```
 
 ---
@@ -109,11 +109,11 @@ The full GSoC implementation extends this with:
 
 This prototype is informed by direct experience with the subsystems it touches:
 
-- **PR #2024** — `natural=arete` (used as example preset)
-- **PR #1993** — `amenity=kitchen`
-- **PR #1967** — access field on `amenity=shelter`
-- **PR #1986** — 52-comment discussion on field label conventions
-- **PR #2065** — nested sub-tags and icon pipeline (`temaki-horse_shelter`)
+- **PR #2024** - `natural=arete` (used as example preset)
+- **PR #1993** - `amenity=kitchen`
+- **PR #1967** - access field on `amenity=shelter`
+- **PR #1986** - 52-comment discussion on field label conventions
+- **PR #2065** - nested sub-tags and icon pipeline (`temaki-horse_shelter`)
 
 ---
 
